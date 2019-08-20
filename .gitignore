@@ -10,3 +10,4 @@ tfplanset
 /bin
 /c
 .vscode/settings.json
+terraform-provider-hyperv

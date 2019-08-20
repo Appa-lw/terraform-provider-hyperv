@@ -170,7 +170,8 @@ if ($NetAdapterNames) {
 	$NewVmSwitchArgs.AllowManagementOS=$vmSwitch.AllowManagementOS
 	$NewVmSwitchArgs.NetAdapterName=$NetAdapterNames
 } else {
-	# $NewVmSwitchArgs.SwitchType=$switchType
+	# The was following commented. Switch will not be built without it being set
+	$NewVmSwitchArgs.SwitchType=$switchType
 	#not used unless interface is specified
 	#-AllowManagementOS $vmSwitch.AllowManagementOS
 }
@@ -185,15 +186,39 @@ if (!$switchObject){
 $SetVmSwitchArgs = @{}
 $SetVmSwitchArgs.Name=$vmSwitch.Name
 $SetVmSwitchArgs.Notes=$vmSwitch.Notes
-if (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Absolute) -and $switchObject.DefaultFlowMinimumBandwidthAbsolute -ne $vmSwitch.DefaultFlowMinimumBandwidthAbsolute) {
-	$SetVmSwitchArgs.DefaultFlowMinimumBandwidthAbsolute=$vmSwitch.DefaultFlowMinimumBandwidthAbsolute
+
+#### Following parameters do not work, if switch type is internal or private so added check for external for failing parameters
+
+if ($vmSwitch.SwitchType -eq 2) {
+	if (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Absolute) -and $switchObject.DefaultFlowMinimumBandwidthAbsolute -ne $vmSwitch.DefaultFlowMinimumBandwidthAbsolute) {
+		$SetVmSwitchArgs.DefaultFlowMinimumBandwidthAbsolute=$vmSwitch.DefaultFlowMinimumBandwidthAbsolute
+	}
+	if ((($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Weight) -or (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Default) -and (-not ($vmSwitch.IovEnabled)))) -and $switchObject.DefaultFlowMinimumBandwidthWeight -ne $vmSwitch.DefaultFlowMinimumBandwidthWeight) {
+		$SetVmSwitchArgs.DefaultFlowMinimumBandwidthWeight=$vmSwitch.DefaultFlowMinimumBandwidthWeight
+	}
+	$SetVmSwitchArgs.DefaultQueueVmmqEnabled=$vmSwitch.DefaultQueueVmmqEnabled
+	$SetVmSwitchArgs.DefaultQueueVmmqQueuePairs=$vmSwitch.DefaultQueueVmmqQueuePairs
+	$SetVmSwitchArgs.DefaultQueueVrssEnabled=$vmSwitch.DefaultQueueVrssEnabled
+	#### Test for  external
+} elseif ($vmSwitch.SwitchType -eq 1){
+	#### Test for  internal
+} elseif ($vmSwitch.SwitchType -eq 0){
+	#### Test for  private
+} else {
+	#### Need to catch error
 }
-if ((($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Weight) -or (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Default) -and (-not ($vmSwitch.IovEnabled)))) -and $switchObject.DefaultFlowMinimumBandwidthWeight -ne $vmSwitch.DefaultFlowMinimumBandwidthWeight) {
-	$SetVmSwitchArgs.DefaultFlowMinimumBandwidthWeight=$vmSwitch.DefaultFlowMinimumBandwidthWeight
-}
-$SetVmSwitchArgs.DefaultQueueVmmqEnabled=$vmSwitch.DefaultQueueVmmqEnabled
-$SetVmSwitchArgs.DefaultQueueVmmqQueuePairs=$vmSwitch.DefaultQueueVmmqQueuePairs
-$SetVmSwitchArgs.DefaultQueueVrssEnabled=$vmSwitch.DefaultQueueVrssEnabled
+
+#############################
+
+##if (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Absolute) -and $switchObject.DefaultFlowMinimumBandwidthAbsolute -ne $vmSwitch.DefaultFlowMinimumBandwidthAbsolute) {
+##	$SetVmSwitchArgs.DefaultFlowMinimumBandwidthAbsolute=$vmSwitch.DefaultFlowMinimumBandwidthAbsolute
+##}
+##if ((($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Weight) -or (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Default) -and (-not ($vmSwitch.IovEnabled)))) -and $switchObject.DefaultFlowMinimumBandwidthWeight -ne $vmSwitch.DefaultFlowMinimumBandwidthWeight) {
+##	$SetVmSwitchArgs.DefaultFlowMinimumBandwidthWeight=$vmSwitch.DefaultFlowMinimumBandwidthWeight
+##}
+##$SetVmSwitchArgs.DefaultQueueVmmqEnabled=$vmSwitch.DefaultQueueVmmqEnabled
+##$SetVmSwitchArgs.DefaultQueueVmmqQueuePairs=$vmSwitch.DefaultQueueVmmqQueuePairs
+##$SetVmSwitchArgs.DefaultQueueVrssEnabled=$vmSwitch.DefaultQueueVrssEnabled
 
 Set-VMSwitch @SetVmSwitchArgs
 
@@ -252,7 +277,7 @@ $vmSwitchObject = Get-VMSwitch | ?{$_.Name -eq '{{.Name}}' } | %{ @{
 	Notes=$_.Notes;
 	AllowManagementOS=$_.AllowManagementOS;
 	EmbeddedTeamingEnabled=$_.EmbeddedTeamingEnabled;
-        SwitchType=$_.SwitchType;
+	SwitchType=$_.SwitchType;
 	IovEnabled=$_.IovEnabled;
 	PacketDirectEnabled=$_.PacketDirectEnabled;
 	BandwidthReservationMode=$_.BandwidthReservationMode;
@@ -322,15 +347,37 @@ if ($NetAdapterNames) {
 	#-AllowManagementOS $vmSwitch.AllowManagementOS
 }
 
-if (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Absolute) -and $switchObject.DefaultFlowMinimumBandwidthAbsolute -ne $vmSwitch.DefaultFlowMinimumBandwidthAbsolute) {
-	$SetVmSwitchArgs.DefaultFlowMinimumBandwidthAbsolute=$vmSwitch.DefaultFlowMinimumBandwidthAbsolute
+#### Following parameters do not work, if switch type is internal or private so added check for external for failing parameters
+
+if ($vmSwitch.SwitchType -eq 2) {
+	if (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Absolute) -and $switchObject.DefaultFlowMinimumBandwidthAbsolute -ne $vmSwitch.DefaultFlowMinimumBandwidthAbsolute) {
+		$SetVmSwitchArgs.DefaultFlowMinimumBandwidthAbsolute=$vmSwitch.DefaultFlowMinimumBandwidthAbsolute
+	}
+	if ((($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Weight) -or (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Default) -and (-not ($vmSwitch.IovEnabled)))) -and $switchObject.DefaultFlowMinimumBandwidthWeight -ne $vmSwitch.DefaultFlowMinimumBandwidthWeight) {
+		$SetVmSwitchArgs.DefaultFlowMinimumBandwidthWeight=$vmSwitch.DefaultFlowMinimumBandwidthWeight
+	}
+	$SetVmSwitchArgs.DefaultQueueVmmqEnabled=$vmSwitch.DefaultQueueVmmqEnabled
+	$SetVmSwitchArgs.DefaultQueueVmmqQueuePairs=$vmSwitch.DefaultQueueVmmqQueuePairs
+	$SetVmSwitchArgs.DefaultQueueVrssEnabled=$vmSwitch.DefaultQueueVrssEnabled
+} elseif ($vmSwitch.SwitchType -eq 1){
+	#### Test for  internal
+} elseif ($vmSwitch.SwitchType -eq 0){
+	#### Test for  private
+} else {
+	####Need to catch error somehow
 }
-if ((($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Weight) -or (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Default) -and (-not ($vmSwitch.IovEnabled)))) -and $switchObject.DefaultFlowMinimumBandwidthWeight -ne $vmSwitch.DefaultFlowMinimumBandwidthWeight) {
-	$SetVmSwitchArgs.DefaultFlowMinimumBandwidthWeight=$vmSwitch.DefaultFlowMinimumBandwidthWeight
-}
-$SetVmSwitchArgs.DefaultQueueVmmqEnabled=$vmSwitch.DefaultQueueVmmqEnabled
-$SetVmSwitchArgs.DefaultQueueVmmqQueuePairs=$vmSwitch.DefaultQueueVmmqQueuePairs
-$SetVmSwitchArgs.DefaultQueueVrssEnabled=$vmSwitch.DefaultQueueVrssEnabled
+
+####################
+
+##if (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Absolute) -and $switchObject.DefaultFlowMinimumBandwidthAbsolute -ne $vmSwitch.DefaultFlowMinimumBandwidthAbsolute) {
+##	$SetVmSwitchArgs.DefaultFlowMinimumBandwidthAbsolute=$vmSwitch.DefaultFlowMinimumBandwidthAbsolute
+##}
+##if ((($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Weight) -or (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Default) -and (-not ($vmSwitch.IovEnabled)))) -and $switchObject.DefaultFlowMinimumBandwidthWeight -ne $vmSwitch.DefaultFlowMinimumBandwidthWeight) {
+##	$SetVmSwitchArgs.DefaultFlowMinimumBandwidthWeight=$vmSwitch.DefaultFlowMinimumBandwidthWeight
+##}
+##$SetVmSwitchArgs.DefaultQueueVmmqEnabled=$vmSwitch.DefaultQueueVmmqEnabled
+##$SetVmSwitchArgs.DefaultQueueVmmqQueuePairs=$vmSwitch.DefaultQueueVmmqQueuePairs
+##$SetVmSwitchArgs.DefaultQueueVrssEnabled=$vmSwitch.DefaultQueueVrssEnabled
 
 Set-VMSwitch @SetVmSwitchArgs
 `))

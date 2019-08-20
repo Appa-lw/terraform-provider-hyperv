@@ -46,7 +46,6 @@ func (c *Config) Client() (comm *api.HypervClient, err error) {
 		"  Key: %t\n"+
 		"  ScriptPath: %s\n"+
 		"  Timeout: %s",
-
 		c.Host,
 		c.Port,
 		c.User,
@@ -81,6 +80,8 @@ func getWinrmClient(config *Config) (winrmClient *winrm.Client, err error) {
 	// if config.TransportDecorator != nil {
 	// 	params.TransportDecorator = config.TransportDecorator
 	// }
+
+	// Commented because causing issues
 	if config.User == "" && config.Password == "" {
 		params.TransportDecorator = func() winrm.Transporter {
 			return &winrmkrb5.Transport{}
@@ -192,8 +193,8 @@ func stringKeyInMap(valid interface{}, ignoreCase bool) schema.SchemaValidateFun
 		mapKeyType := reflect.ValueOf(mapKeyString)
 		mapValueType := mapType.MapIndex(mapKeyType)
 
-		if mapValueType.IsValid() {
-			es = append(es, fmt.Errorf("expected %s to be one of %s, got %s", k, valid, mapKeyString))
+		if !mapValueType.IsValid() {
+			es = append(es, fmt.Errorf("expected %s to be one of %t, got %s", k, valid, mapKeyString))
 		}
 
 		return
@@ -214,7 +215,7 @@ func IntInSlice(valid []int) schema.SchemaValidateFunc {
 			}
 		}
 
-		es = append(es, fmt.Errorf("expected %s to be one of %d, got %d", k, valid, value))
+		es = append(es, fmt.Errorf("expected %s to be one of %v, got %d", k, valid, value))
 		return
 	}
 }
