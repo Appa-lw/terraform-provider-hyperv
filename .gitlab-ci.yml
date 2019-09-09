@@ -13,4 +13,6 @@ build:
   stage: build
   script:
     - make
-    - find / -name "terraform-provider-hyperv"
+  artifacts:
+     paths:
+     - /go/bin/terraform-provider-hyperv
