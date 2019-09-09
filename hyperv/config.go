@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dpotapov/winrm-auth-krb5"
+	"github.com/tidalf/winrm-auth-krb5"
 	"github.com/dylanmei/iso8601"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/masterzen/winrm"
