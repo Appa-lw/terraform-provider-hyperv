@@ -12,8 +12,7 @@ unit_tests:
 build:
   stage: build
   script:
-    - make
-    - find / -name terraform-provider-hyperv
+    - go build
   artifacts:
      paths:
-     - /go/bin/terraform-provider-hyperv
+     - terraform-provider-hyperv
