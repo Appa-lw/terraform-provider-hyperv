@@ -7,9 +7,9 @@ stages:
 unit_tests:
   stage: test
   script:
-    - GOPATH-. make test
+    - make test
 
 build:
   stage: build
   script:
-    - GOPATH-. make
+    - make
