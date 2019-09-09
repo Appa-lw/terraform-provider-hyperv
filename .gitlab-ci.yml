@@ -1,0 +1,18 @@
+image: sjdweb/go-docker-build:1.10
+
+stages:
+  - test
+  - build
+
+before_script:
+  - dep ensure -vendor-only
+
+unit_tests:
+  stage: test
+  script:
+    - make test
+
+build:
+  stage: build
+  script:
+    - make

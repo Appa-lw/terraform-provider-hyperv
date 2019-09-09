@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tidalf/winrm-auth-krb5"
 	"github.com/dylanmei/iso8601"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/masterzen/winrm"
 	"github.com/tidalf/terraform-provider-hyperv/api"
+	"github.com/tidalf/winrm-auth-krb5"
 )
 
 type Config struct {
@@ -40,12 +40,13 @@ func (c *Config) Client() (comm *api.HypervClient, err error) {
 		"  Password: %t\n"+
 		"  HTTPS: %t\n"+
 		"  Insecure: %t\n"+
-		"  TLSServerName: %t\n"+
+		"  TLSServerName: %s\n"+
 		"  CACert: %t\n"+
 		"  Cert: %t\n"+
 		"  Key: %t\n"+
-		"  ScriptPath: %t\n"+
-		"  Timeout: %t",
+		"  ScriptPath: %s\n"+
+		"  Timeout: %s",
+
 		c.Host,
 		c.Port,
 		c.User,
@@ -192,7 +193,7 @@ func stringKeyInMap(valid interface{}, ignoreCase bool) schema.SchemaValidateFun
 		mapValueType := mapType.MapIndex(mapKeyType)
 
 		if mapValueType.IsValid() {
-			es = append(es, fmt.Errorf("expected %s to be one of %mapKeyString, got %s", k, valid, mapKeyString))
+			es = append(es, fmt.Errorf("expected %s to be one of %s, got %s", k, valid, mapKeyString))
 		}
 
 		return
@@ -213,7 +214,7 @@ func IntInSlice(valid []int) schema.SchemaValidateFunc {
 			}
 		}
 
-		es = append(es, fmt.Errorf("expected %s to be one of %v, got %s", k, valid, value))
+		es = append(es, fmt.Errorf("expected %s to be one of %d, got %d", k, valid, value))
 		return
 	}
 }
