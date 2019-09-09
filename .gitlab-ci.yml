@@ -1,4 +1,4 @@
-image: sjdweb/go-docker-build:1.10
+image: golang:1.13.0-buster
 
 stages:
   - test
