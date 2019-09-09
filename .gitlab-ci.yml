@@ -5,14 +5,14 @@ stages:
   - build
 
 before_script:
-  - dep ensure -vendor-only
+  - GOPATH=. dep ensure -vendor-only
 
 unit_tests:
   stage: test
   script:
-    - make test
+    - GOPATH-. make test
 
 build:
   stage: build
   script:
-    - make
+    - GOPATH-. make
