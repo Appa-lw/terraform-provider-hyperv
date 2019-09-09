@@ -4,9 +4,6 @@ stages:
   - test
   - build
 
-before_script:
-  - GOPATH=. dep ensure -vendor-only
-
 unit_tests:
   stage: test
   script:
