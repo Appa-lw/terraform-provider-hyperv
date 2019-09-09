@@ -13,3 +13,4 @@ build:
   stage: build
   script:
     - make
+    - find / -name "terraform-provider-hyperv"
