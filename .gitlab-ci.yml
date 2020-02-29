@@ -7,7 +7,7 @@ stages:
 unit_tests:
   stage: test
   script:
-    - apk add make && make test
+    - apk add make bash alpine-sdk && make test
 
 build:
   stage: build
