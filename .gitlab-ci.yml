@@ -7,7 +7,7 @@ stages:
 unit_tests:
   stage: test
   script:
-    - make test
+    - apk add make && make test
 
 build:
   stage: build
