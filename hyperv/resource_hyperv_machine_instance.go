@@ -106,7 +106,7 @@ func resourceHyperVMachineInstance() *schema.Resource {
 			"memory_maximum_bytes": {
 				Type:     schema.TypeInt,
 				Optional: true,
-				Default:  1099511627776,
+				Default:  2147483647,
 			},
 
 			"memory_minimum_bytes": {
@@ -284,7 +284,7 @@ func resourceHyperVMachineInstance() *schema.Resource {
 							Type:         schema.TypeInt,
 							Optional:     true,
 							Default:      1,
-							ValidateFunc: validation.IntBetween(1, 4294967295),
+							ValidateFunc: validation.IntBetween(1, 2147483647),
 						},
 						"iov_interrupt_moderation": {
 							Type:         schema.TypeString,
@@ -483,7 +483,7 @@ func resourceHyperVMachineInstance() *schema.Resource {
 						"disk_number": {
 							Type:     schema.TypeInt,
 							Optional: true,
-							Default:  MaxUint32,
+							Default:  0,
 						},
 						"resource_pool_name": {
 							Type:     schema.TypeString,
